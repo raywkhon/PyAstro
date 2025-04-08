@@ -5,7 +5,7 @@ import sympy
 from sympy import symbols, sin, cos, sinh
 from einsteinpy.symbolic import EinsteinTensor, MetricTensor
 sympy.init_printing()
-
+  
 # Anti-de Sitter spacetime Metric
 syms = sympy.symbols("t chi theta phi") 
 syms
@@ -25,8 +25,6 @@ metric = MetricTensor(m, syms)
 metric.tensor() # Input - metric tensor
 einst = EinsteinTensor.from_metric(metric) # Calculating the Einstein Tensor (with both indices covariant)
 einst.tensor() # Output:  Einstein Tensor 
-
-
 
 # The two coupled differential equations — the "mass continuity equation and the "Tolman-Oppenheimer-Volkoff (TOV) equation" require:
 # 1. Specify an equation of state (EOS) p(rho) relating pressure p and energy density rho.
@@ -70,9 +68,7 @@ def TOV_solver(p_c, rho_c, Gamma, K, r_max=50, dr=0.01):
         dm_dr = 4 * np.pi * r**2 * rho
         dp_dr = - (rho + p) * (m + 4 * np.pi * r**3 * p) / (r * (r - 2 * m) + 1e-10)  # Avoid division by zero
         
-        # RK4 integration
-        # ... (Implement RK4 steps here)
-        
+        # RK4 integration (Implement RK4 steps here)
         # Update variables
         m += dm_dr * dr
         p += dp_dr * dr
@@ -87,11 +83,24 @@ def TOV_solver(p_c, rho_c, Gamma, K, r_max=50, dr=0.01):
         p_list.append(p)
         rho_list.append(rho)
     
-    return r_list[1:10]
-    # return r_list, m_list, p_list, rho_list
+    # return r_list[1:10]
+    return r_list, m_list, p_list, rho_list
 
-TOV_solver(p_c = 10^35, rho_c = 5*10^17, Gamma = 2, K = 1*10^5, r_max=50, dr=0.01)
-TOV_solver(p_c = 10^35, rho_c = 5*10^17, Gamma = 2, K = 1*10^5, r_max=50, dr=0.01)
+TOV_solver(p_c = 10**35, rho_c = 5*10**17, Gamma = 2, K = 1*10**5, r_max=50, dr=0.01)
+# test codes
+r = 0
+m = 0
+p_c = 10**3
+rho_c = 5*10**17
+Gamma = 2
+K = 1*10**5
+r_max=50
+dr=0.01
+dm_dr = 4*np.pi*((1e-10)**2)*rho_c
+dm_dr
+dp_dr = - (rho_c + p_c) * (m + 4*np.pi*(1e-10)**3*p_c) / ((1e-10) * ((1e-10) - 2 * m))  # Avoid division by zero
+dp_dr
+
 
 # 5. Results
 # The integration stops when p drops to zero, defining the star's radius R.
@@ -107,17 +116,9 @@ TOV_solver(p_c = 10^35, rho_c = 5*10^17, Gamma = 2, K = 1*10^5, r_max=50, dr=0.0
 # Radius R approx = 10 km.
 
 # Key Notes
-# Relativistic effects**: The TOV equation deviates from Newtonian gravity when \( m/r \) is large (e.g., near neutron star cores).
+# Relativistic effects**: The TOV equation deviates from Newtonian gravity when m/r is large (e.g., near neutron star cores).
 # Stability**: Solutions are valid only if M and R satisfy stability criteria.
 # ore realistic models**: Use tabulated EOS data for precise neutron star predictions.
 
 # Would you like help implementing the RK4 method or analyzing specific cases?
-
-
-
-
-
-
-
-
 
