@@ -1,5 +1,7 @@
 # EinsteinPy https://docs.einsteinpy.org/en/latest/jupyter.html
-#  id raywkhon token: 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
+# GitHub id: raywkhon token: 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
+# SymPy https://docs.sympy.org/latest/guides/solving/index.html
+
 # Einstein Tensor calculations using Symbolic module
 import sympy
 from sympy import symbols, sin, cos, sinh, Matrix
@@ -34,9 +36,88 @@ metric.tensor() # Input - metric tensor
 einst = EinsteinTensor.from_metric(metric) # Calculating the Einstein Tensor (with both indices covariant)
 einst.tensor() # Output:  Einstein Tensor 
 
-# The two coupled differential equations — the "mass continuity equation and the "Tolman-Oppenheimer-Volkoff (TOV) equation" require:
-# 1. Specify an equation of state (EOS) p(rho) relating pressure p and energy density rho.
-# 2. Integrate numerically from the center (r = 0) to the surface (p = 0), using appropriate boundary conditions.
+# Einstein Tensor calculations using Symbolic module
+import sympy
+from sympy import symbols, sin, cos, sinh, Matrix
+from sympy import init_session
+from einsteinpy.symbolic import EinsteinTensor, MetricTensor
+# sympy.init_printing(use_unicode=True)
+sympy.init_printing()
+init_session
+
+syms = sympy.symbols("t x y z") 
+A, W = sympy.symbols("A W") 
+t, x, y, z = syms
+# M = Matrix([[-1,0,0,0], [0,cos(t) ** 2,0,0],[0,0,cos(t) ** 2 * sinh(ch) ** 2,0], [0,0,0,cos(t) ** 2 * sinh(ch) ** 2 * sin(th) ** 2]])
+M = ([[-1,0,0,0], [0,1,0,0],[0,0,1,A*sin(W*(t-x))], [0,0,A*sin(W*(t-x)),1]])
+M
+metric = MetricTensor(M, syms)
+metric.tensor() # Input - metric tensor
+einst = EinsteinTensor.from_metric(metric) # Calculating the Einstein Tensor (with both indices covariant)
+einst.tensor() # Output:  Einstein Tensor 
+print(metric[0,0])
+sympy.pprint(metric[0,0])
+print(einst[0,0])
+sympy.pprint(einst[0,0])
+einst.order
+einst.config
+
+# Contravariant & Covariant indices in Tensors (Symbolic)
+import sympy
+from einsteinpy.symbolic import ChristoffelSymbols, RiemannCurvatureTensor
+from einsteinpy.symbolic.predefined import Schwarzschild
+sympy.init_printing()
+# Analysing the schwarzschild metric along with performing various operations
+sch = Schwarzschild()
+sch.tensor()
+print(sch[0,0])
+sympy.pprint(sch[0,0])
+sch.order
+sch.config
+
+sch_inv = sch.inv()
+sch_inv.tensor()
+print(sch_inv[3,3])
+sympy.pprint(sch_inv[3,3])
+ 
+# Obtaining Christoffel Symbols from Metric Tensor
+chr = ChristoffelSymbols.from_metric(sch_inv) # can be initialized from sch also
+chr.tensor()
+print(chr[3,3,2])
+sympy.pprint(chr[3])
+chr.order
+chr.config
+
+# Changing the first index to covariant
+new_chr = chr.change_config('lll') # changing the configuration to (covariant, covariant, covariant)
+new_chr.tensor()
+new_chr.config
+
+# Any arbitary index configuration would also work!
+new_chr2 = new_chr.change_config('lul')
+new_chr2.tensor()
+ 
+# Obtaining Riemann Tensor from Christoffel Symbols and manipulating it’s indices
+rm = RiemannCurvatureTensor.from_christoffels(new_chr2)
+rm[0,0,:,:]
+rm.config
+
+rm2 = rm.change_config("uuuu")
+rm2[0,0,:,:]
+
+rm3 = rm2.change_config("lulu")
+rm3[0,0,:,:]
+
+rm4 = rm3.change_config("ulll")
+rm4.simplify()
+rm4[0,0,:,:]
+ 
+# It is seen that rm and rm4 are same as they have the same configuration
+
+
+# Solving 2 differential equations — the "mass continuity equation and the "Tolman-Oppenheimer-Volkoff (TOV) equation":
+# i. Specify an equation of state (EOS) p(rho) relating pressure p and energy density rho.
+# ii. Integrate numerically from the center (r = 0) to the surface (p = 0), using appropriate boundary conditions.
 
 # 1. Equations to Solve
 # dm/dr = 4pi*r^2*rho (Mass continuity)
@@ -187,7 +268,7 @@ def rk4_integrate_TOV(p_c, rho_c, Gamma, K, r_max=20, dr=0.01):
         
         # Update density using EOS
         rho = (p / K)**(1 / Gamma)
-        
+
         # Store results
         r_list.append(r)
         m_list.append(m)
