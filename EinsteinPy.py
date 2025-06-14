@@ -191,8 +191,7 @@ TOV_solver(p_c = 10**35, rho_c = 5*10**17, Gamma = 2, K = 1*10**5, r_max=50, dr=
 # Key Notes
 # Relativistic effects: The TOV equation deviates from Newtonian gravity when m/r is large (e.g., near neutron star cores).
 # Stability: Solutions are valid only if M and R satisfy stability criteria.
-# More realistic models: Use tabulated EOS data for precise neutron star predictions.
-###########
+# More realistic models: Use tabulated EOS data for precise neutron star predictions
 
 ###########
 # Implement the RK4 method
