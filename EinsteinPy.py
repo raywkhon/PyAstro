@@ -70,7 +70,7 @@ sympy.init_printing()
 # Analysing the schwarzschild metric along with performing various operations
 sch = Schwarzschild()
 sch.tensor()
-print(sch[0,0])
+print(sch[0,0])7
 sympy.pprint(sch[0,0])
 sch.order
 sch.config
